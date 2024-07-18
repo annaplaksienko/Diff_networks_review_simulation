@@ -66,6 +66,10 @@ for (i in 1:length(G_diff_list)) {
         timestamp(prefix = "*-", suffix = "-*")
         message(names(X_list[[i]])[j])
         
+        cl <- makeCluster(ncores)
+        clusterEvalQ(cl, library("jewel"))
+        clusterEvalQ(cl, library("DCA"))
+        clusterEvalQ(cl, source("DCA_func.R"))
         results <- vector(mode = "list", length = nreps)
         results <- clusterApply(cl, X_reps, DCA_parallel, 
                                 alpha_vec = alpha, 
