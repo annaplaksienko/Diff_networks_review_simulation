@@ -34,7 +34,7 @@ DCA_parallel <- function(data, alpha_vec, true_diff_graph) {
 
 source("DCA_func.R")
 
-#we do not provide this file as it is too heavy. Please produce it yourself usign Generate_X.R
+#we do not provide this file as it is too heavy. Please produce it yourself using Generate_X.R
 load("G_X_full.Rdata")
 
 message("Running DCA")
