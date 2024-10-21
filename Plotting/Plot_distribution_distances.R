@@ -1,5 +1,5 @@
 load("Generate_data/G1_G2_Gdiff_Sigma1_Sigma2_all.Rdata")
-load("perf_AUC.Rdata")
+load("Plotting/perf_AUC.Rdata")
 
 distance <- rep(NA, 12)
 names(distance) <- names(G_diff_list)
