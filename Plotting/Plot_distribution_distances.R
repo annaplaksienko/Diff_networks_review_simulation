@@ -24,11 +24,11 @@ for (i in 1:12) {
 
 perf_AUC$distance <- distance
 
-text_size <- 24
+text_size <- 22
 
 graph_type_Tex_title <- TeX("$|G^{diff}|-|G^{(1)}|$")  
 
-ggplot(perf_AUC, aes(x = log10(distance), y = AUC, 
+ggplot(perf_AUC, aes(x = log2(distance), y = AUC, 
                  color = both_sizes, shape = graph_type)) +
     geom_point(size = 6, alpha = 0.9) +
     ylim(c(0, 1)) +

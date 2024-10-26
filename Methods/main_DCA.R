@@ -16,7 +16,8 @@ DCA_parallel <- function(data, alpha_vec, true_diff_graph) {
                       "size")
   perf[ , "param"] <- alpha_vec
   
-  res_DCA <- DCA_func(data, alpha = alpha_vec)$diffnet_list
+  #res_DCA <- DCA_func(data, alpha = alpha_vec)$diffnet_list
+  res_DCA <- DCA_func(data, alpha = alpha_vec)
   
   for (t in 1:nalpha) {
     curr_res <- res_DCA[[t]]
@@ -32,7 +33,7 @@ DCA_parallel <- function(data, alpha_vec, true_diff_graph) {
   return(perf)
 }
 
-source("DCA_func.R")
+source("DCA_func_corrected.R")
 
 #we do not provide this file as it is too heavy. Please produce it yourself using Generate_X.R
 load("G_X_full.Rdata")
@@ -69,7 +70,7 @@ for (i in 1:length(G_diff_list)) {
         cl <- makeCluster(ncores)
         clusterEvalQ(cl, library("jewel"))
         clusterEvalQ(cl, library("DCA"))
-        clusterEvalQ(cl, source("DCA_func.R"))
+        clusterEvalQ(cl, source("DCA_func_corrected.R"))
         results <- vector(mode = "list", length = nreps)
         results <- clusterApply(cl, X_reps, DCA_parallel, 
                                 alpha_vec = alpha, 
@@ -87,7 +88,7 @@ for (i in 1:length(G_diff_list)) {
         ind <- ind + 1
         
         save(list = c("perf_list", "perf_summarized_list"), 
-             file = "results_DCA.Rdata")
+             file = "results_DCA_new_Oct2024.Rdata")
         
         remove(results)
     }
