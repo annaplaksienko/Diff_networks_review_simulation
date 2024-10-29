@@ -5,3 +5,5 @@ This repository contains the R code for the simulation study for comparison of s
 *Methods* folder contains the code we used to produce power-FDR curve for five methods.
 
 *Plotting* folder has the dataset with all the performance results and the code that we used for plotting.
+
+*Real data* folder contains the dataset we used for the real data example and the code to produce the illustration.
