@@ -115,6 +115,13 @@ DCA_func <- function(X, alpha) {
     
     final_res <- diffnet_from_adjusted(adjusted_p_values, alpha)
     names(final_res) <- paste("alpha = ", alpha, sep = "")
+    if (!is.null(colnames(X[[1]]))) {
+        for (i in 1:length(alpha)) {
+            rownames(final_res[[i]]) <- colnames(final_res[[i]]) <- 
+                colnames(X[[1]])
+        }
+    }
+
     
     return(final_res)
 }
