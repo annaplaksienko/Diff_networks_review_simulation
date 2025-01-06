@@ -50,12 +50,12 @@ names(perf_list) <- names(perf_summarized_list) <- paste(rep(names(G_diff_list),
                                                          sep = "_")
 ind <- 1
 
-for (i in length(G_diff_list)) {
+for (i in 1:length(G_diff_list)) {
     G_diff <- as.matrix(as_adjacency_matrix(G_diff_list[[i]]))
     timestamp(prefix = "@@-", suffix = "-@@")
     message(names(G_diff_list)[i])
     
-    for (j in length(X_list[[i]])) {
+    for (j in 1:length(X_list[[i]])) {
         X_reps <- X_list[[i]][[j]]
         nreps <- length(X_reps)
         timestamp(prefix = "*-", suffix = "-*")
