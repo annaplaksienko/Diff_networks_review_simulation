@@ -31,8 +31,7 @@ appender2 <- function(string) {
     TeX(paste("$|G^{(1)}| \\approx $", string), output = "character")  
 }
 
-perf$true_diff_size_Latex <- appender1(perf$true_diff_size)
-diff_labels_unique <- unique(perf$true_diff_size_Latex)
+diff_labels_unique <- unique(appender1(perf$true_diff_size))
 diff_labels <- c("50" = diff_labels_unique[2], 
                  "100" = diff_labels_unique[1])
 
