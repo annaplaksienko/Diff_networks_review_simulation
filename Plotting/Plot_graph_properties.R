@@ -37,4 +37,6 @@ ggplot(perf_AUC, aes(x = value, y = AUC,
     ylab("Mean AUC") +
     scale_shape_manual(name = "Graph type",
                        values = c(15, 17, 8)) +
-    scale_color_discrete(name = graph_type_Tex_title)
+    scale_color_discrete(name = graph_type_Tex_title) +
+    scale_x_continuous(breaks = c(0, 0.05, 0.15, 0.25), 
+                       labels = c(0, 0.05, 0.15, 0.25)) 
