@@ -287,7 +287,7 @@ source("Methods/DCA_func_corrected.R")
              rep("#619CFF", gsize(res_DiffNetFDR_0.05_partcor)),
              rep("#F564E3", gsize(res_DCA_0.05)),
              rep("#00BA38", gsize(res_Dtrace_BIC)),
-             rep("#B79F00", gsize(res_ONDSA_0.05)))
+             rep("gold", gsize(res_ONDSA_0.05)))
   
   coords <- tkplot(union_opt, 
                    vertex.size = vsize, vertex.color = vcol, 
