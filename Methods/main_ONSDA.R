@@ -89,10 +89,11 @@ ONSDA_parallel <- function(data, alpha_vec, true_diff_graph) {
     return(perf)
 }
 
-#we do not provide this file as it is too heavy. Please produce it yourself usign Generate_X.R
-load("G_X_full.Rdata")
+#we do not provide this file as it is too heavy. 
+#Please produce it yourself using Generate_X.R
+load("G_diff_X_all.Rdata")
 
-ncores <- 50
+ncores <- 9
 alpha <-  c(0.01, 0.02, 0.03, 0.04,
             seq(0.05, 0.995, by = 0.025))
 nalpha <- length(alpha)
@@ -146,12 +147,9 @@ for (i in 1:length(G_diff_list)) {
     }
 }
 
-message("Finished!")
-timestamp(prefix = "#-", suffix = "-#")
-
 #construct performance table
 {
-    settings <- settings[rep(seq_len(nrow(settings)), each = 2), ]
+    settings <- as.data.frame(settings[rep(seq_len(nrow(settings)), each = 2), ])
     settings$sample_size <- rep(c("100 samples", "400 samples"),
                                 dim(settings)[1] / 2)
     
@@ -173,3 +171,9 @@ timestamp(prefix = "#-", suffix = "-#")
     save(list = c("perf_list", "perf_summarized_list", "perf_ONDSA"), 
          file = "results_ONDSA.Rdata")
 }
+
+message("Finished!")
+timestamp(prefix = "#-", suffix = "-#")
+
+
+    
