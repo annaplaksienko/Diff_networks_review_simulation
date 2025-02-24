@@ -3,7 +3,7 @@ library(jewel)
 library(DiffGraph)
 library(dplyr)
 
-Dtrace_parallel <- function(data, lambda_vec, true_diff_graph) {
+DTrace_parallel <- function(data, lambda_vec, true_diff_graph) {
     lambda_res <- vector(mode = "list", length = length(lambda_vec))
     names(lambda_res) <- paste("lambda", lambda_vec, sep = "_") 
     
@@ -33,13 +33,19 @@ Dtrace_parallel <- function(data, lambda_vec, true_diff_graph) {
 }
 
 #we do not provide this file as it is too heavy. Please produce it yourself usign Generate_X.R
-load("G_X_full.Rdata")
+load("G_diff_X_all.Rdata")
+#where to save the results
+filename <- "results_DTrace.Rdata"
+
+G_diff_list <- G_diff_list[-c(3), drop = FALSE]
+X_list <- X_list[-c(3), drop = FALSE]
+settings <- settings[-c(3), , drop = FALSE]
 
 ncores <- 50
 lambda <- seq(from = 0.08, to = 0.8, length.out = 40)
 nlambda <- length(lambda)
 
-message("Running Dtrace")
+message("Running DTrace, all settings")
 
 perf_list <- perf_summarized_list <- vector(mode = "list", 
                                             length = length(G_diff_list) * 2)
@@ -66,7 +72,7 @@ for (i in 1:length(G_diff_list)) {
         clusterEvalQ(cl, library("jewel"))
         results <- vector(mode = "list", length = nreps)
         names(results) <- paste("Realization", 1:nreps, sep = "_")
-        results <- clusterApply(cl, X_reps, Dtrace_parallel, 
+        results <- clusterApply(cl, X_reps, DTrace_parallel, 
                                 lambda_vec = lambda, 
                                 true_diff_graph = G_diff)
         stopCluster(cl)
@@ -82,9 +88,32 @@ for (i in 1:length(G_diff_list)) {
         ind <- ind + 1
         
         save(list = c("perf_list", "perf_summarized_list"), 
-             file = "results_Dtrace.Rdata")
+             file = filename)
     }
 }
+
+settings <- as.data.frame(settings[rep(seq_len(nrow(settings)), each = 2), ])
+settings$sample_size <- rep(c("100 samples", "400 samples"),
+                            dim(settings)[1] / 2)
+
+npar <- dim(perf_summarized_list[[1]])[1]
+perf <-  do.call(rbind, perf_summarized_list)
+perf$graph_type <- rep(settings$graph_type, each = npar)
+perf$true_diff_size <- rep(settings$true_diff_size, each = npar)
+perf$true_diff_size <- factor(perf$true_diff_size,
+                              levels = c("50", "100"))
+perf$true_G1_size <- rep(settings$true_G1_size, each = npar)
+perf$true_G1_size <- factor(perf$true_G1_size,
+                            levels = c("200", "400"))
+perf$sample_size <- rep(settings$sample_size, each = npar)
+perf$method <- rep("DTrace", dim(perf)[1])
+perf$param <- perf$lambda
+perf$lambda <- NULL
+perf_DTrace <- perf
+remove(perf)
+
+save(list = c("perf_list", "perf_summarized_list", "perf_DTrace"), 
+     file = filename)
 
 message("Finished!")
 timestamp(prefix = "#-", suffix = "-#")

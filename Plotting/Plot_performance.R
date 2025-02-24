@@ -13,16 +13,6 @@ perf_star <- perf[perf$graph_type == "star", ]
 perf_star_100 <- perf_star[perf_star$sample_size == "100 samples", ]
 perf_star_400 <- perf_star[perf_star$sample_size == "400 samples", ]
 
-perf_random_FGL <- perf_FGL[perf_FGL$graph_type == "random", ]
-perf_random_100_FGL <- perf_random_FGL[perf_random_FGL$sample_size == "100 samples", ]
-perf_random_400_FGL <- perf_random_FGL[perf_random_FGL$sample_size == "400 samples", ]
-perf_sf_FGL <- perf_FGL[perf_FGL$graph_type == "scalefree", ]
-perf_sf_100_FGL <- perf_sf_FGL[perf_sf_FGL$sample_size == "100 samples", ]
-perf_sf_400_FGL <- perf_sf_FGL[perf_sf_FGL$sample_size == "400 samples", ]
-perf_star_FGL <- perf_FGL[perf_FGL$graph_type == "star", ]
-perf_star_100_FGL <- perf_star_FGL[perf_star_FGL$sample_size == "100 samples", ]
-perf_star_400_FGL <- perf_star_FGL[perf_star_FGL$sample_size == "400 samples", ]
-
 appender1 <- function(string) {
     TeX(paste("$|G^{diff}| \\approx $", string), output = "character")  
 }
@@ -38,9 +28,10 @@ diff_labels <- c("50" = diff_labels_unique[2],
 text_size <- 28
 title_size <- 24
 linewidth <- 1.2
+alpha <- 0.8
 
 ggplot(perf_random_100, aes(x = FDR, y = power, color = method)) +
-    geom_line(linewidth = linewidth) + 
+    geom_line(linewidth = linewidth, alpha = alpha) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
                           levels = diff_labels), 
@@ -50,9 +41,9 @@ ggplot(perf_random_100, aes(x = FDR, y = power, color = method)) +
                        labels = c(0, 0.25, 0.5, 0.75, 1),
                        limits = c(0, 1)) +
     ylim(0, 1) +
-    scale_color_manual(values = c("#00BA38", "#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold", 
-                                  "#F8766D")) +
+    scale_color_manual(values = c("#F8766D", "#00BFC4", 
+                                  "#619CFF", "gold", 
+                                  "#F564E3", "#00BA38")) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
           legend.position = "none") +
@@ -60,7 +51,7 @@ ggplot(perf_random_100, aes(x = FDR, y = power, color = method)) +
               aes(x = FDR, y = power), linewidth = linewidth)
 
 ggplot(perf_random_400, aes(x = FDR, y = power, color = method)) +
-    geom_line(linewidth = linewidth) + 
+    geom_line(linewidth = linewidth, alpha = alpha) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
                           levels = diff_labels), 
@@ -70,17 +61,15 @@ ggplot(perf_random_400, aes(x = FDR, y = power, color = method)) +
                        labels = c(0, 0.25, 0.5, 0.75, 1),
                        limits = c(0, 1)) +
     ylim(0, 1) +
-    scale_color_manual(values = c("#00BA38", "#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold", 
-                                  "#F8766D")) +
+    scale_color_manual(values = c("#F8766D", "#00BFC4", 
+                                  "#619CFF", "gold", 
+                                  "#F564E3", "#00BA38")) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
-          legend.position = "none") +
-    geom_path(data = perf_random_400_FGL, 
-              aes(x = FDR, y = power), linewidth = linewidth)
+          legend.position = "none") 
 
 ggplot(perf_sf_100, aes(x = FDR, y = power, color = method)) +
-    geom_line(linewidth = linewidth) + 
+    geom_line(linewidth = linewidth, alpha = alpha) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
                           levels = diff_labels), 
@@ -90,17 +79,15 @@ ggplot(perf_sf_100, aes(x = FDR, y = power, color = method)) +
                        labels = c(0, 0.25, 0.5, 0.75, 1),
                        limits = c(0, 1)) +
     ylim(0, 1) +
-    scale_color_manual(values = c("#00BA38", "#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold", 
-                                  "#F8766D")) +
+    scale_color_manual(values = c("#F8766D", "#00BFC4", 
+                                  "#619CFF", "gold", 
+                                  "#F564E3", "#00BA38")) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
-          legend.position = "none") +
-    geom_path(data = perf_sf_100_FGL, 
-              aes(x = FDR, y = power), linewidth = linewidth)
+          legend.position = "none") 
 
 ggplot(perf_sf_400, aes(x = FDR, y = power, color = method)) +
-    geom_line(linewidth = linewidth) + 
+    geom_line(linewidth = linewidth, alpha = alpha) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
                           levels = diff_labels), 
@@ -110,17 +97,15 @@ ggplot(perf_sf_400, aes(x = FDR, y = power, color = method)) +
                        labels = c(0, 0.25, 0.5, 0.75, 1),
                        limits = c(0, 1)) +
     ylim(0, 1) +
-    scale_color_manual(values = c("#00BA38", "#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold", 
-                                  "#F8766D")) +
+    scale_color_manual(values = c("#F8766D", "#00BFC4", 
+                                  "#619CFF", "gold", 
+                                  "#F564E3", "#00BA38")) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
-          legend.position = "none") +
-    geom_path(data = perf_sf_400_FGL, 
-              aes(x = FDR, y = power), linewidth = linewidth)
+          legend.position = "none") 
 
 ggplot(perf_star_100, aes(x = FDR, y = power, color = method)) +
-    geom_line(linewidth = linewidth) + 
+    geom_line(linewidth = linewidth, alpha = alpha) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
                           levels = diff_labels), 
@@ -130,17 +115,15 @@ ggplot(perf_star_100, aes(x = FDR, y = power, color = method)) +
                        labels = c(0, 0.25, 0.5, 0.75, 1),
                        limits = c(0, 1)) +
     ylim(0, 1) +
-    scale_color_manual(values = c("#00BA38", "#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold", 
-                                  "#F8766D")) +
+    scale_color_manual(values = c("#F8766D", "#00BFC4", 
+                                  "#619CFF", "gold", 
+                                  "#F564E3", "#00BA38")) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
-          legend.position = "none") +
-    geom_path(data = perf_star_100_FGL, 
-              aes(x = FDR, y = power), linewidth = linewidth)
+          legend.position = "none") 
 
 ggplot(perf_star_400, aes(x = FDR, y = power, color = method)) +
-    geom_line(linewidth = linewidth) + 
+    geom_line(linewidth = linewidth, alpha = alpha) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
                           levels = diff_labels), 
@@ -150,11 +133,9 @@ ggplot(perf_star_400, aes(x = FDR, y = power, color = method)) +
                        labels = c(0, 0.25, 0.5, 0.75, 1),
                        limits = c(0, 1)) +
     ylim(0, 1) +
-    scale_color_manual(values = c("#00BA38", "#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold", 
-                                  "#F8766D")) +
+    scale_color_manual(values = c("#F8766D", "#00BFC4", 
+                                  "#619CFF", "gold", 
+                                  "#F564E3", "#00BA38")) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
-          legend.position = "none") +
-    geom_path(data = perf_star_400_FGL, 
-              aes(x = FDR, y = power), linewidth = linewidth) 
+          legend.position = "none")

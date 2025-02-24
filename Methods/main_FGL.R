@@ -2,6 +2,7 @@ library(parallel)
 library(jewel)
 library(JGL)
 library(dplyr)
+library(igraph)
 
 FGL_parallel <- function(data, lambda1, lambda2, thresh, 
                          true_diff_graph) {
@@ -49,15 +50,18 @@ FGL_parallel <- function(data, lambda1, lambda2, thresh,
     return(perf)
 }
 
-#we do not provide this file as it is too heavy. Please produce it yourself usign Generate_X.R
-load("G_X_full.Rdata")
+#we do not provide this file as it is too heavy. 
+#Please produce it yourself using Generate_X.R
+load("G_diff_X_all.Rdata")
+#where to save the results
+filename <- "results_FGL.Rdata"
 
 ncores <- 8
 
 lambda1 <- c(0.1, 0.25)
 nlambda1 <- length(lambda1)
 lambda2 <- c(seq(0.01, 0.1, length.out = 10),
-             seq(0.1, 0.5, length.out = 11))
+             seq(0.1, 0.4, length.out = 11))
 nlambda2 <- length(lambda2)
 
 thresh <- c(10^-1, 10^-2, 10^-3, 10^-4, 10^-6)
@@ -109,8 +113,37 @@ for (i in 1:length(G_diff_list)) {
         ind <- ind + 1
         
         save(list = c("perf_list", "perf_summarized_list"), 
-             file = "results_FGL.Rdata")
+             file = filename)
     }
+}
+
+{
+    settings <- as.data.frame(settings[rep(seq_len(nrow(settings)), each = 2), ])
+    settings$sample_size <- rep(c("100 samples", "400 samples"),
+                                dim(settings)[1] / 2)
+    
+    npar <- dim(perf_summarized_list[[1]])[1]
+    perf <-  do.call(rbind, perf_summarized_list)
+    perf$graph_type <- rep(settings$graph_type, each = npar)
+    perf$true_diff_size <- rep(settings$true_diff_size, each = npar)
+    perf$true_diff_size <- factor(perf$true_diff_size,
+                                  levels = c("50", "100"))
+    perf$true_G1_size <- rep(settings$true_G1_size, each = npar)
+    perf$true_G1_size <- factor(perf$true_G1_size,
+                                levels = c("200", "400"))
+    perf$sample_size <- rep(settings$sample_size, each = npar)
+    perf$method <- rep("FGL", dim(perf)[1])
+    perf_FGL_full <- perf
+    remove(perf)
+    
+    perf_FGL <- perf_FGL_full[perf_FGL_full$threshold == 0.001, ]
+    perf_FGL <- perf_FGL[perf_FGL$lambda1 == 0.1, ]
+    perf_FGL$param <- perf_FGL$lambda2
+    perf_FGL$lambda1 <- perf_FGL$lambda2 <- perf_FGL$threshold <- NULL
+    
+    save(list = c("perf_list", "perf_summarized_list", 
+                  "perf_FGL_full", "perf_FGL"), 
+         file = filename)
 }
 
 message("Finished!")

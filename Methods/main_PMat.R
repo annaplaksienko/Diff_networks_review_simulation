@@ -41,6 +41,8 @@ Testing_PMat_parallel <- function(data, alpha_vec, true_diff_graph) {
 #we do not provide this file as it is too heavy. 
 #Please produce it yourself using Generate_X.R
 load("G_diff_X_all.Rdata")
+#for saving results
+filename <- "results_PMat.Rdata"
 
 ncores <- 9
 alpha <- c(0.001, 0.0025, 0.005, 
@@ -49,7 +51,7 @@ alpha <- c(0.001, 0.0025, 0.005,
            seq(0.91, 0.995, by = 0.005))
 nalpha <- length(alpha)
 
-message("Running PMat")
+message("Running PMat AGAIN")
 
 perf_list <- perf_summarized_list <- vector(mode = "list", 
                                             length = length(G_diff_list) * 2)
@@ -92,7 +94,7 @@ for (i in 1:length(G_diff_list)) {
         ind <- ind + 1
         
         save(list = c("perf_list", "perf_summarized_list"), 
-             file = "Results_PMat.Rdata")
+             file = filename)
     }
 }
 
@@ -114,11 +116,11 @@ for (i in 1:length(G_diff_list)) {
     perf$method <- rep("PMat", dim(perf)[1])
     perf$param <- perf$alpha
     perf$alpha <- NULL
-    perf_PMat <- perf
+    perf_PMat_NEW <- perf
     remove(perf)
     
     save(list = c("perf_list", "perf_summarized_list", "perf_PMat"), 
-         file = "results_PMat.Rdata")
+         file = filename)
 }
 
 message("Finished!")

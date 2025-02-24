@@ -13,7 +13,7 @@ nreps <- 50
 n_vec <- c(100, 400)
 
 for (l in 1:L) {
-    print(l)
+    print(paste0(l, "/", 12))
     X_list[[l]] <- vector(mode = "list", length = 2)
     names(X_list[[l]]) <- paste("n", n_vec, sep = "")
     

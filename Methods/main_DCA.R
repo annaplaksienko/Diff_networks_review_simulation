@@ -35,16 +35,18 @@ DCA_parallel <- function(data, alpha_vec, true_diff_graph) {
 
 source("DCA_func_corrected.R")
 
-#we do not provide this file as it is too heavy. Please produce it yourself using Generate_X.R
-load("G_X_full.Rdata")
+#we do not provide this file as it is too heavy. 
+#Please produce it yourself using Generate_X.R
+load("G_diff_X_all.Rdata")
+#for saving results
+filename <- "results_DCA.Rdata"
 
 message("Running DCA")
 
-ncores <- 50
-alpha <- c(0.000025, 0.00005,
-           seq(0.0001, 0.005, by = 0.00015),
-           seq(0.005, 0.05, by = 0.001), 
-           seq(0.05, 0.995, by = 0.01))
+ncores <- 9
+alpha <- c(0.0001, 0.005, 0.05, 
+           seq(0.1, 0.95, by = 0.05),
+           0.97, 0.99)
 nalpha <- length(alpha)
 
 perf_list <- perf_summarized_list <- vector(mode = "list", 
@@ -70,7 +72,7 @@ for (i in 1:length(G_diff_list)) {
         cl <- makeCluster(ncores)
         clusterEvalQ(cl, library("jewel"))
         clusterEvalQ(cl, library("DCA"))
-        clusterEvalQ(cl, source("DCA_func_corrected.R"))
+        clusterEvalQ(cl, source("/Users/annapla/Documents/2_OCBE/3_Manuscript_1/Diff_networks_review_simulation/Methods/DCA_func_corrected.R"))
         results <- vector(mode = "list", length = nreps)
         results <- clusterApply(cl, X_reps, DCA_parallel, 
                                 alpha_vec = alpha, 
@@ -88,14 +90,38 @@ for (i in 1:length(G_diff_list)) {
         ind <- ind + 1
         
         save(list = c("perf_list", "perf_summarized_list"), 
-             file = "results_DCA_new_Oct2024.Rdata")
+             file = filename)
         
         remove(results)
     }
 }
 
+{
+    settings <- as.data.frame(settings[rep(seq_len(nrow(settings)), 
+                                           each = 2), ])
+    settings$sample_size <- rep(c("100 samples", "400 samples"),
+                                dim(settings)[1] / 2)
+    
+    npar <- dim(perf_summarized_list[[1]])[1]
+    perf <-  do.call(rbind, perf_summarized_list)
+    perf$graph_type <- rep(settings$graph_type, each = npar)
+    perf$true_diff_size <- rep(settings$true_diff_size, each = npar)
+    perf$true_diff_size <- factor(perf$true_diff_size,
+                                  levels = c("50", "100"))
+    perf$true_G1_size <- rep(settings$true_G1_size, each = npar)
+    perf$true_G1_size <- factor(perf$true_G1_size,
+                                levels = c("200", "400"))
+    perf$sample_size <- rep(settings$sample_size, each = npar)
+    perf$method <- rep("DCA", dim(perf)[1])
+    perf$param <- perf$alpha
+    perf$alpha <- NULL
+    perf_DCA <- perf
+    remove(perf)
+    
+    save(list = c("perf_list", "perf_summarized_list", "perf_DCA"), 
+         file = filename)
+}
+
 message("Finished!")
 timestamp(prefix = "#-", suffix = "-#")
-
-
 

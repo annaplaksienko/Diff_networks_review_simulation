@@ -5,7 +5,6 @@ library(dplyr)
 #path <- getwd()
 load(paste(path, "/Plotting/perf_ALL.Rdata", sep = ""))
 
-perf <- rbind(perf[, 2:13], perf_FGL[1:12])
 perf$both_sizes <- paste(perf$true_diff_size, perf$true_G1_size,
                          sep = "-")
 perf$both_sizes <- factor(perf$both_sizes,

@@ -5,7 +5,7 @@ library(dplyr)
 
 source("DiffNetFDR_functions.R")
 
-Testing_prec_mat_parallel <- function(data, alpha_vec, true_diff_graph) {
+Testing_part_corr_parallel <- function(data, alpha_vec, true_diff_graph) {
     alpha_res <- vector(mode = "list", length = length(alpha_vec))
     names(alpha_res) <- paste("alpha", alpha_vec, sep = "_") 
     
@@ -22,7 +22,7 @@ Testing_prec_mat_parallel <- function(data, alpha_vec, true_diff_graph) {
                 rep(names(data)[2], dim(data[[2]])[1]))
     res_DiffNetFDR_precmat <- DiffNet.FDR_new(X_long, labels, 
                                               alpha = alpha_vec, 
-                                              test.type = "pmat",
+                                              test.type = "pcor",
                                               parallel = FALSE)
     for (t in 1:nalpha) {
         curr_res <- res_DiffNetFDR_precmat[[t]]$Diff.net
@@ -39,7 +39,9 @@ Testing_prec_mat_parallel <- function(data, alpha_vec, true_diff_graph) {
 }
 
 #we do not provide this file as it is too heavy. Please produce it yourself usign Generate_X.R
-load("G_X_full.Rdata")
+load("G_diff_X_all.Rdata")
+#where to save the results
+filename <- "results_PCor.Rdata"
 
 ncores <- 50
 alpha <- c(0.001, 0.0025, 0.005, 
@@ -48,13 +50,15 @@ alpha <- c(0.001, 0.0025, 0.005,
            seq(0.91, 0.995, by = 0.005))
 nalpha <- length(alpha)
 
-message("Running DiffNetFDR, testing for precision matrices entries equality")
+message("Running PCor")
 
 perf_list <- perf_summarized_list <- vector(mode = "list", 
                                             length = length(G_diff_list) * 2)
-names(perf_list) <- paste(rep(names(G_diff_list), each = 2), 
-                          rep(names(X_list[[1]]), length(names(G_diff_list))),
-                          sep = "_")
+names(perf_list) <- names(perf_summarized_list) <- paste(rep(names(G_diff_list), 
+                                                      each = 2), 
+                                                  rep(names(X_list[[1]]), 
+                                                      length(names(G_diff_list))),
+                                                  sep = "_")
 ind <- 1
 
 for (i in 1:length(G_diff_list)) {
@@ -74,7 +78,7 @@ for (i in 1:length(G_diff_list)) {
         clusterEvalQ(cl, library("jewel"))
         results <- vector(mode = "list", length = nreps)
         names(results) <- paste("Realization", 1:nreps, sep = "_")
-        results <- clusterApply(cl, X_reps, Testing_prec_mat_parallel, 
+        results <- clusterApply(cl, X_reps, Testing_part_corr_parallel, 
                                 alpha_vec = alpha, 
                                 true_diff_graph = G_diff)
         stopCluster(cl)
@@ -90,11 +94,35 @@ for (i in 1:length(G_diff_list)) {
         ind <- ind + 1
         
         save(list = c("perf_list", "perf_summarized_list"), 
-             file = "Results_testing_prec_mat.Rdata")
+             file = filename)
     }
 }
 
+settings <- as.data.frame(settings[rep(seq_len(nrow(settings)), each = 2), ])
+settings$sample_size <- rep(c("100 samples", "400 samples"),
+                            dim(settings)[1] / 2)
+
+npar <- dim(perf_summarized_list[[1]])[1]
+perf <-  do.call(rbind, perf_summarized_list)
+perf$graph_type <- rep(settings$graph_type, each = npar)
+perf$true_diff_size <- rep(settings$true_diff_size, each = npar)
+perf$true_diff_size <- factor(perf$true_diff_size,
+                              levels = c("50", "100"))
+perf$true_G1_size <- rep(settings$true_G1_size, each = npar)
+perf$true_G1_size <- factor(perf$true_G1_size,
+                            levels = c("200", "400"))
+perf$sample_size <- rep(settings$sample_size, each = npar)
+perf$method <- rep("PCor", dim(perf)[1])
+perf$param <- perf$alpha
+perf$alpha <- NULL
+perf_PCor <- perf
+remove(perf)
+
+save(list = c("perf_list", "perf_summarized_list", "perf_PCor"), 
+     file = filename)
+
 message("Finished!")
 timestamp(prefix = "#-", suffix = "-#")
+
 
 

@@ -3,7 +3,7 @@ library(latex2exp)
 
 load("perf_ALL.Rdata")
 
-perf <- perf[perf$method != "Dtrace", ]
+perf <- perf[perf$method != "DTrace", ]
 perf$alpha <- perf$param
 perf$param <- NULL
 
@@ -34,6 +34,7 @@ title_size <- 24
 linewidth <- 1.2
 
 ggplot(perf_random_100, aes(x = alpha, y = FDR, color = method)) +
+    geom_abline(linetype = "dashed") +
     geom_line(linewidth = linewidth) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
@@ -47,10 +48,10 @@ ggplot(perf_random_100, aes(x = alpha, y = FDR, color = method)) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
           legend.position = "none") +
-    scale_color_manual(values = c("#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold"))
+    scale_color_manual(values = c("#00BFC4", "#619CFF", "gold", "#F564E3")) 
 
 ggplot(perf_random_400, aes(x = alpha, y = FDR, color = method)) +
+    geom_abline(linetype = "dashed") +
     geom_line(linewidth = linewidth) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
@@ -64,10 +65,10 @@ ggplot(perf_random_400, aes(x = alpha, y = FDR, color = method)) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
           legend.position = "none") +
-    scale_color_manual(values = c("#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold")) 
+    scale_color_manual(values = c("#00BFC4", "#619CFF", "gold", "#F564E3")) 
 
 ggplot(perf_sf_100, aes(x = alpha, y = FDR, color = method)) +
+    geom_abline(linetype = "dashed", color = "dimgrey") +
     geom_line(linewidth = linewidth) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
@@ -81,10 +82,10 @@ ggplot(perf_sf_100, aes(x = alpha, y = FDR, color = method)) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
           legend.position = "none") +
-    scale_color_manual(values = c("#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold")) 
+    scale_color_manual(values = c("#00BFC4", "#619CFF", "gold", "#F564E3")) 
 
 ggplot(perf_sf_400, aes(x = alpha, y = FDR, color = method)) +
+    geom_abline(linetype = "dashed", color = "dimgrey") +
     geom_line(linewidth = linewidth) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
@@ -98,10 +99,10 @@ ggplot(perf_sf_400, aes(x = alpha, y = FDR, color = method)) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
           legend.position = "none") +
-    scale_color_manual(values = c("#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold")) 
+    scale_color_manual(values = c("#00BFC4", "#619CFF", "gold", "#F564E3")) 
 
 ggplot(perf_star_100, aes(x = alpha, y = FDR, color = method)) +
+    geom_abline(linetype = "dashed", color = "dimgrey") +
     geom_line(linewidth = linewidth) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
@@ -115,10 +116,10 @@ ggplot(perf_star_100, aes(x = alpha, y = FDR, color = method)) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
           legend.position = "none") +
-    scale_color_manual(values = c("#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold")) 
+    scale_color_manual(values = c("#00BFC4", "#619CFF", "gold", "#F564E3")) 
 
 ggplot(perf_star_400, aes(x = alpha, y = FDR, color = method)) +
+    geom_abline(linetype = "dashed", color = "dimgrey") +
     geom_line(linewidth = linewidth) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
@@ -132,5 +133,4 @@ ggplot(perf_star_400, aes(x = alpha, y = FDR, color = method)) +
     theme(text = element_text(size = text_size),
           plot.title = element_text(size = title_size),
           legend.position = "none") +
-    scale_color_manual(values = c("#00BFC4", 
-                                  "#619CFF", "#F564E3", "gold")) 
+    scale_color_manual(values = c("#00BFC4", "#619CFF", "gold", "#F564E3")) 

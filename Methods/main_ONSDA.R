@@ -92,6 +92,8 @@ ONSDA_parallel <- function(data, alpha_vec, true_diff_graph) {
 #we do not provide this file as it is too heavy. 
 #Please produce it yourself using Generate_X.R
 load("G_diff_X_all.Rdata")
+#where to save the results
+filename <- "results_ONDSA.Rdata"
 
 ncores <- 9
 alpha <-  c(0.01, 0.02, 0.03, 0.04,
@@ -143,7 +145,7 @@ for (i in 1:length(G_diff_list)) {
         ind <- ind + 1
         
         save(list = c("perf_list", "perf_summarized_list"), 
-             file = "results_ONDSA.Rdata")
+             file = filename)
     }
 }
 
@@ -169,7 +171,7 @@ for (i in 1:length(G_diff_list)) {
     perf_ONDSA <- perf
     
     save(list = c("perf_list", "perf_summarized_list", "perf_ONDSA"), 
-         file = "results_ONDSA.Rdata")
+         file = filename)
 }
 
 message("Finished!")
