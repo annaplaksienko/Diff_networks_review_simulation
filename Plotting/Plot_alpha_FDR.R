@@ -3,6 +3,7 @@ library(latex2exp)
 
 load("perf_ALL.Rdata")
 
+perf <- perf[perf$method != "FGL", ]
 perf <- perf[perf$method != "DTrace", ]
 perf$alpha <- perf$param
 perf$param <- NULL
@@ -26,8 +27,8 @@ appender2 <- function(string) {
 }
 
 diff_labels_unique <- unique(appender1(perf$true_diff_size))
-diff_labels <- c("50" = diff_labels_unique[2], 
-                 "100" = diff_labels_unique[1])
+diff_labels <- c("50" = diff_labels_unique[1], 
+                 "100" = diff_labels_unique[2])
 
 text_size <- 28
 title_size <- 24
@@ -85,7 +86,7 @@ ggplot(perf_sf_100, aes(x = alpha, y = FDR, color = method)) +
     scale_color_manual(values = c("#00BFC4", "#619CFF", "gold", "#F564E3")) 
 
 ggplot(perf_sf_400, aes(x = alpha, y = FDR, color = method)) +
-    geom_abline(linetype = "dashed", color = "dimgrey") +
+    geom_abline(linetype = "dashed") +
     geom_line(linewidth = linewidth) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
@@ -102,7 +103,7 @@ ggplot(perf_sf_400, aes(x = alpha, y = FDR, color = method)) +
     scale_color_manual(values = c("#00BFC4", "#619CFF", "gold", "#F564E3")) 
 
 ggplot(perf_star_100, aes(x = alpha, y = FDR, color = method)) +
-    geom_abline(linetype = "dashed", color = "dimgrey") +
+    geom_abline(linetype = "dashed") +
     geom_line(linewidth = linewidth) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
@@ -119,7 +120,7 @@ ggplot(perf_star_100, aes(x = alpha, y = FDR, color = method)) +
     scale_color_manual(values = c("#00BFC4", "#619CFF", "gold", "#F564E3")) 
 
 ggplot(perf_star_400, aes(x = alpha, y = FDR, color = method)) +
-    geom_abline(linetype = "dashed", color = "dimgrey") +
+    geom_abline(linetype = "dashed") +
     geom_line(linewidth = linewidth) + 
     facet_grid(appender2(true_G1_size) ~ 
                    factor(appender1(true_diff_size),
