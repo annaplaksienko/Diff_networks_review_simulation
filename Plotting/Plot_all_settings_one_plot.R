@@ -1,9 +1,19 @@
+library(ggplot2)
+
 perf$both_sizes <- paste(perf$true_diff_size, perf$true_G1_size,
                          sep = "-")
 perf$both_sizes <- factor(perf$both_sizes,
                           levels = c("50-200", "100-200",
                                      "50-400", "100-400"))
 
+perf$sample_size <- factor(perf$sample_size, 
+                           levels = c("400 samples",
+                                      "100 samples"))
+
+
+text_size <- 26
+title_size <- 24
+linewidth <- 1.2
 
 ggplot(perf[perf$method == "DTrace", ], 
        aes(x = FDR, y = power, 
@@ -16,4 +26,5 @@ ggplot(perf[perf$method == "DTrace", ],
     ylim(0, 1) +
     scale_linetype_manual(values = c(1, 2, 3, 5)) +
     theme(text = element_text(size = text_size),
-          plot.title = element_text(size = title_size)) 
+          plot.title = element_text(size = title_size),
+          legend.key.size = unit(3.5, "lines")) 
